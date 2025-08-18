@@ -1,30 +1,114 @@
-/* Center the modal properly */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+:root{
+  --lsu-purple:#461D7C;
+  --lsu-purple-dark:#2c1251;
+  --lsu-gold:#FDD023;
+  --tile-blue:#0f2b7a;
+  --tile-blue-2:#1a41b0;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  color:#fff;
+  background:#0b1240;
+  text-align:center;
+}
+
+header{
+  background: var(--lsu-purple-dark);
+  padding: 18px 12px;
+  border-bottom: 4px solid var(--lsu-gold);
+}
+h1{
+  margin:0;
+  font-size: 2.4rem;
+  color: var(--lsu-gold);
+  text-shadow: 2px 2px #000;
+}
+#meta{margin-top:6px; opacity:.95}
+#meta .dot{margin:0 8px}
+
+main{
+  max-width: 1200px;
+  margin: 26px auto;
+  padding: 0 12px;
+}
+
+#board{
+  display:grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+/* Category headers */
+.cat{
+  background:#17235d;
+  border:2px solid #000;
+  padding: 12px 8px;
+  font-weight: 800;
+  border-radius: 12px;
+  box-shadow: 2px 2px 8px #000;
+}
+
+/* Tiles */
+.tile{
+  background: var(--tile-blue);
+  border: 2px solid #000;
+  padding: 28px 8px;
+  border-radius: 12px;
+  color: var(--lsu-gold);
+  font-weight: 900;
+  font-size: 1.7rem;
+  cursor: pointer;
+  box-shadow: 2px 2px 8px #000;
+  transition: background .15s ease-in-out, transform .06s;
+}
+.tile:hover{ background: var(--tile-blue-2); }
+.tile:active{ transform: scale(.98); }
+
+.tile.used{
+  background: #222 !important;
+  color:#555 !important;
+  cursor: default;
+  position: relative;
+}
+.tile.used::after{
+  content:"X";
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 3.2rem; color: var(--lsu-gold); opacity:.7;
+}
+
+#controls{ margin-top:18px; }
+
+/* Buttons */
+.btn{
+  background:#e5e5e5; color:#000; border:none;
+  padding:10px 16px; border-radius:8px; cursor:pointer;
+  font-weight:700;
+}
+.btn.primary{ background: var(--lsu-gold); }
+.btn:hover{ filter: brightness(1.05); }
+.row{ margin-top:12px; }
+
+/* Modal — centered */
+.hidden{ display:none; }
+#modal{
+  position: fixed; inset:0;
+  background: rgba(0,0,0,.82);
+  display:flex; align-items:center; justify-content:center;
+  padding: 16px;
   z-index: 1000;
 }
-
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
+.modal-card{
+  width: min(860px, calc(100% - 24px));
+  background: #ffffff;
+  color:#000;
+  border-radius: 14px;
+  padding: 24px 18px 18px;
   text-align: center;
-  max-width: 600px;
-  width: 80%;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 40px rgba(0,0,0,.35);
 }
-
-/* Grey out used tiles */
-.tile.used {
-  background-color: #444 !important;
-  color: #bbb !important;
-  pointer-events: none; /* disable clicking */
-}
+.modal-card h2{ margin:0 0 12px 0; }
+.qa{ font-size: 1.35rem; margin: 10px 0; }
