@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Jeopardy Game</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <header>
     <h1>Jeopardy!</h1>
     <div id="scoreboard">
-      <span>Player Score: $<span id="score">0</span></span>
+      <span>Score: <strong id="score">$0</strong></span>
+      <span id="roundLabel" style="margin-left:12px;"></span>
     </div>
   </header>
 
@@ -19,11 +20,16 @@
     <div id="controls"></div>
   </main>
 
-  <div id="question-modal" class="hidden">
+  <!-- Question modal -->
+  <div id="modal" class="hidden">
     <div class="modal-content">
+      <h2 id="modal-category"></h2>
       <p id="question-text"></p>
-      <input type="text" id="answer-input" placeholder="Your answer..." />
-      <button id="submit-answer">Submit</button>
+      <button id="revealBtn">Reveal Answer</button>
+      <p id="answer-text" class="hidden"></p>
+      <div style="margin-top:10px;">
+        <button id="backBtn">Back to Board</button>
+      </div>
     </div>
   </div>
 
