@@ -1,4 +1,4 @@
-// ----------------- ROUND 1 DATA -----------------
+// ---------- ROUND 1 DATA ----------
 const categories = ["Majors","Careers","Skills","Internships","Networking"];
 const values = [100,200,300,400,500];
 
@@ -40,29 +40,30 @@ const QA = {
   ]
 };
 
-// ----------------- ELEMENTS -----------------
+// ---------- ELEMENTS ----------
 const board = document.getElementById("board");
 const controls = document.getElementById("controls");
 const scoreEl = document.getElementById("score");
 const roundLabel = document.getElementById("roundLabel");
 
-const modal = document.getElementById("modal");
-const modalCat = document.getElementById("modalCat");
-const modalQ = document.getElementById("modalQ");
-const modalA = document.getElementById("modalA");
+// dialog
+const dlg = document.getElementById("qaDialog");
+const dlgCat = document.getElementById("dlgCat");
+const dlgQ = document.getElementById("dlgQ");
+const dlgA = document.getElementById("dlgA");
 const revealBtn = document.getElementById("revealBtn");
 const backBtn = document.getElementById("backBtn");
 
-// ----------------- STATE -----------------
+// ---------- STATE ----------
 let score = 0;
-let tilesRemaining = 25; // 5x5
-let lastTile = null;     // DOM node for tile we opened
+let tilesRemaining = 25;
+let lastTile = null;
 
-// ----------------- RENDER BOARD -----------------
+// ---------- RENDER ----------
 function renderBoard(){
   board.innerHTML = "";
 
-  // Category headers
+  // headers
   categories.forEach(cat=>{
     const h = document.createElement("div");
     h.className = "cat";
@@ -71,7 +72,7 @@ function renderBoard(){
   });
 
   // 5 rows of values
-  for(let r=0; r<5; r++){
+  for(let r=0;r<5;r++){
     categories.forEach(cat=>{
       const tile = document.createElement("div");
       tile.className = "tile";
@@ -84,50 +85,49 @@ function renderBoard(){
   }
 }
 
-// ----------------- OPEN / REVEAL / BACK -----------------
 function openQA(tile){
   if (tile.classList.contains("used")) return;
 
   lastTile = tile;
   const cat = tile.dataset.cat;
-  const row = parseInt(tile.dataset.row,10);
+  const row = Number(tile.dataset.row);
   const {q,a} = QA[cat][row];
 
-  modalCat.textContent = `${cat} — Round 1`;
-  modalQ.textContent = `${q} (worth ${values[row]})`;
-  modalA.textContent = "Answer: " + a;
+  dlgCat.textContent = `${cat} — Round 1`;
+  dlgQ.textContent = `${q} (worth ${values[row]})`;
+  dlgA.textContent = "Answer: " + a;
+  dlgA.classList.add("hidden");
 
-  modalA.classList.add("hidden");   // hide answer until reveal
-  modal.classList.remove("hidden"); // show centered modal
+  // open centered modal
+  if (typeof dlg.showModal === "function") dlg.showModal();
+  else dlg.setAttribute("open","true"); // fallback
 }
 
 revealBtn.addEventListener("click", ()=> {
-  modalA.classList.remove("hidden");
+  dlgA.classList.remove("hidden");
 });
 
 backBtn.addEventListener("click", ()=> {
-  modal.classList.add("hidden");
-
-  // mark tile used with big X and disable it
+  // <dialog> closes automatically because backBtn is inside <form method="dialog">
+  // mark tile used
   if (lastTile && !lastTile.classList.contains("used")){
     lastTile.classList.add("used");
-    lastTile = null;
     tilesRemaining--;
+    lastTile = null;
   }
 
-  // prompt to advance when board is done (placeholder)
   if (tilesRemaining === 0){
     controls.innerHTML = `
       <button class="btn primary" id="nextBtn">
         Board 1 Complete — Advance to Round 2
       </button>`;
     document.getElementById("nextBtn").onclick = ()=>{
-      alert("Round 2 coming next—I'll wire the second board when you’re ready.");
+      alert("Round 2 coming next — once Round 1 looks perfect, I’ll wire the rest.");
     };
   }
 });
 
-// ----------------- INIT -----------------
+// ---------- INIT ----------
 roundLabel.textContent = "Round 1";
 scoreEl.textContent = score;
 renderBoard();
