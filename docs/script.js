@@ -1,4 +1,4 @@
-// ------- ROUND 1 DATA (5 categories × 5 values) ----------------------------
+// ----------------- ROUND 1 DATA -----------------
 const categories = ["Majors","Careers","Skills","Internships","Networking"];
 const values = [100,200,300,400,500];
 
@@ -40,9 +40,12 @@ const QA = {
   ]
 };
 
-// ------- ELEMENTS -----------------------------------------------------------
+// ----------------- ELEMENTS -----------------
 const board = document.getElementById("board");
 const controls = document.getElementById("controls");
+const scoreEl = document.getElementById("score");
+const roundLabel = document.getElementById("roundLabel");
+
 const modal = document.getElementById("modal");
 const modalCat = document.getElementById("modalCat");
 const modalQ = document.getElementById("modalQ");
@@ -50,13 +53,15 @@ const modalA = document.getElementById("modalA");
 const revealBtn = document.getElementById("revealBtn");
 const backBtn = document.getElementById("backBtn");
 
-// ------- STATE --------------------------------------------------------------
-let tilesRemaining = 25;     // 5x5
-let lastTile = null;         // the tile we just opened
+// ----------------- STATE -----------------
+let score = 0;
+let tilesRemaining = 25; // 5x5
+let lastTile = null;     // DOM node for tile we opened
 
-// ------- RENDER THE BOARD ---------------------------------------------------
+// ----------------- RENDER BOARD -----------------
 function renderBoard(){
   board.innerHTML = "";
+
   // Category headers
   categories.forEach(cat=>{
     const h = document.createElement("div");
@@ -64,21 +69,22 @@ function renderBoard(){
     h.textContent = cat;
     board.appendChild(h);
   });
+
   // 5 rows of values
-  for(let r=0;r<5;r++){
+  for(let r=0; r<5; r++){
     categories.forEach(cat=>{
       const tile = document.createElement("div");
       tile.className = "tile";
       tile.textContent = `$${values[r]}`;
       tile.dataset.cat = cat;
       tile.dataset.row = r;
-      tile.onclick = ()=>openQA(tile);
+      tile.addEventListener("click", ()=>openQA(tile));
       board.appendChild(tile);
     });
   }
 }
 
-// ------- OPEN / REVEAL / RETURN --------------------------------------------
+// ----------------- OPEN / REVEAL / BACK -----------------
 function openQA(tile){
   if (tile.classList.contains("used")) return;
 
@@ -87,39 +93,41 @@ function openQA(tile){
   const row = parseInt(tile.dataset.row,10);
   const {q,a} = QA[cat][row];
 
-  modalCat.textContent = `${cat} — $${values[row]}`;
-  modalQ.textContent = q;
+  modalCat.textContent = `${cat} — Round 1`;
+  modalQ.textContent = `${q} (worth ${values[row]})`;
   modalA.textContent = "Answer: " + a;
 
-  // hide answer until click
-  modalA.classList.add("hidden");
-  modal.classList.remove("hidden");
+  modalA.classList.add("hidden");   // hide answer until reveal
+  modal.classList.remove("hidden"); // show centered modal
 }
 
-revealBtn.onclick = ()=> modalA.classList.remove("hidden");
+revealBtn.addEventListener("click", ()=> {
+  modalA.classList.remove("hidden");
+});
 
-backBtn.onclick = ()=>{
+backBtn.addEventListener("click", ()=> {
   modal.classList.add("hidden");
 
-  // mark the tile used (big X) and decrement
+  // mark tile used with big X and disable it
   if (lastTile && !lastTile.classList.contains("used")){
     lastTile.classList.add("used");
-    tilesRemaining--;
     lastTile = null;
+    tilesRemaining--;
   }
 
-  // when board is exhausted, show an advance button
+  // prompt to advance when board is done (placeholder)
   if (tilesRemaining === 0){
     controls.innerHTML = `
-      <button id="nextBtn" class="primary">
+      <button class="btn primary" id="nextBtn">
         Board 1 Complete — Advance to Round 2
       </button>`;
     document.getElementById("nextBtn").onclick = ()=>{
-      // Placeholder: you’ll swap in Round 2 here
-      alert("Nice! I’ll wire Round 2 / Lightning next. For now this ends Round 1.");
+      alert("Round 2 coming next—I'll wire the second board when you’re ready.");
     };
   }
-};
+});
 
-// ------- INIT ---------------------------------------------------------------
+// ----------------- INIT -----------------
+roundLabel.textContent = "Round 1";
+scoreEl.textContent = score;
 renderBoard();
