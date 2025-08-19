@@ -21,23 +21,20 @@
     <div id="controls"></div>
   </main>
 
-  <!-- Native centered modal -->
-  <dialog id="qaDialog">
-    <div class="dialog-card">
-      <h2 id="dlgCat"></h2>
-      <p id="dlgQ" class="qa"></p>
+  <!-- Centered overlay modal (no <dialog>; fully cross-browser) -->
+  <div id="modal" class="modal">
+    <div class="modal-card">
+      <h2 id="modalCat"></h2>
+      <p id="modalQ" class="qa"></p>
 
       <button id="revealBtn" class="btn primary">Reveal Answer</button>
-      <p id="dlgA" class="qa hidden"></p>
+      <p id="modalA" class="qa hidden"></p>
 
       <div class="row">
-        <!-- form closes <dialog> cleanly -->
-        <form method="dialog">
-          <button id="backBtn" class="btn">Back to Board</button>
-        </form>
+        <button id="backBtn" class="btn">Back to Board</button>
       </div>
     </div>
-  </dialog>
+  </div>
 
   <script src="script.js"></script>
 </body>
