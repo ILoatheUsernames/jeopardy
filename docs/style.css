@@ -26,8 +26,7 @@ h1{
   color: var(--lsu-gold);
   text-shadow: 2px 2px #000;
 }
-#meta{margin-top:6px; opacity:.95}
-#meta .dot{margin:0 8px}
+#subtitle{ margin-top:6px; opacity:.95 }
 
 main{
   max-width: 1200px;
@@ -71,7 +70,7 @@ main{
   background: #222 !important;
   color:#555 !important;
   cursor: default;
-  pointer-events: none; /* disable click */
+  pointer-events: none;
   position: relative;
 }
 .tile.used::after{
@@ -99,9 +98,9 @@ main{
 .modal{
   position: fixed; inset:0;
   background: rgba(0,0,0,.82);
-  display:none;                /* hidden by default */
-  align-items:center;          /* center vertically */
-  justify-content:center;      /* center horizontally */
+  display:none;
+  align-items:center;
+  justify-content:center;
   padding: 16px;
   z-index: 1000;
 }
