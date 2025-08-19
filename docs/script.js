@@ -39,25 +39,21 @@ const QA = {
     {q:"Define the hidden job market.", a:"Jobs found via networking, not postings"}
   ]
 };
-
 // ---------- ELEMENTS ----------
 const board = document.getElementById("board");
 const controls = document.getElementById("controls");
-const scoreEl = document.getElementById("score");
-const roundLabel = document.getElementById("roundLabel");
 
-// dialog
-const dlg = document.getElementById("qaDialog");
-const dlgCat = document.getElementById("dlgCat");
-const dlgQ = document.getElementById("dlgQ");
-const dlgA = document.getElementById("dlgA");
+// modal
+const modal = document.getElementById("modal");
+const modalCat = document.getElementById("modalCat");
+const modalQ = document.getElementById("modalQ");
+const modalA = document.getElementById("modalA");
 const revealBtn = document.getElementById("revealBtn");
 const backBtn = document.getElementById("backBtn");
 
 // ---------- STATE ----------
-let score = 0;
-let tilesRemaining = 25;
-let lastTile = null;
+let tilesRemaining = 25; // 5x5
+let lastTile = null;     // DOM node for tile we opened
 
 // ---------- RENDER ----------
 function renderBoard(){
@@ -85,6 +81,7 @@ function renderBoard(){
   }
 }
 
+// ---------- MODAL FLOW ----------
 function openQA(tile){
   if (tile.classList.contains("used")) return;
 
@@ -93,22 +90,21 @@ function openQA(tile){
   const row = Number(tile.dataset.row);
   const {q,a} = QA[cat][row];
 
-  dlgCat.textContent = `${cat} — Round 1`;
-  dlgQ.textContent = `${q} (worth ${values[row]})`;
-  dlgA.textContent = "Answer: " + a;
-  dlgA.classList.add("hidden");
+  modalCat.textContent = `${cat} — Round 1`;
+  modalQ.textContent = `${q} (worth ${values[row]})`;
+  modalA.textContent = "Answer: " + a;
+  modalA.classList.add("hidden");
 
-  // open centered modal
-  if (typeof dlg.showModal === "function") dlg.showModal();
-  else dlg.setAttribute("open","true"); // fallback
+  modal.classList.add("show"); // center & show
 }
 
-revealBtn.addEventListener("click", ()=> {
-  dlgA.classList.remove("hidden");
+revealBtn.addEventListener("click", ()=>{
+  modalA.classList.remove("hidden");
 });
 
-backBtn.addEventListener("click", ()=> {
-  // <dialog> closes automatically because backBtn is inside <form method="dialog">
+backBtn.addEventListener("click", ()=>{
+  modal.classList.remove("show");
+
   // mark tile used
   if (lastTile && !lastTile.classList.contains("used")){
     lastTile.classList.add("used");
@@ -116,18 +112,17 @@ backBtn.addEventListener("click", ()=> {
     lastTile = null;
   }
 
+  // if board finished, show advance button (placeholder)
   if (tilesRemaining === 0){
     controls.innerHTML = `
       <button class="btn primary" id="nextBtn">
         Board 1 Complete — Advance to Round 2
       </button>`;
     document.getElementById("nextBtn").onclick = ()=>{
-      alert("Round 2 coming next — once Round 1 looks perfect, I’ll wire the rest.");
+      alert("Round 2 coming next — once Round 1 is perfect, I’ll wire the rest.");
     };
   }
 });
 
 // ---------- INIT ----------
-roundLabel.textContent = "Round 1";
-scoreEl.textContent = score;
 renderBoard();
