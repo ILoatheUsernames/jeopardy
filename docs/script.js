@@ -1,7 +1,9 @@
-// ---------- ROUND 1 DATA ----------
-const categories = ["Majors","Careers","Skills","Internships","Networking"];
-const values = [100,200,300,400,500];
-
+// Wrap everything so we wait for the DOM.
+document.addEventListener("DOMContentLoaded", () => {
+  try {
+    // ---------- ROUND 1 DATA ----------
+    const categories = ["Majors","Careers","Skills","Internships","Networking"];
+    const values = [100,200,300,400,500];
 const QA = {
   "Majors": [
     {q:"What’s the most common major for pre-med at LSU?", a:"Biological Sciences"},
@@ -39,88 +41,107 @@ const QA = {
     {q:"Define the hidden job market.", a:"Jobs found via networking, not postings"}
   ]
 };
-// ---------- ELEMENTS ----------
-const board = document.getElementById("board");
-const controls = document.getElementById("controls");
+  // ---------- ELEMENTS ----------
+    const board = document.getElementById("board");
+    const controls = document.getElementById("controls");
 
-// modal
-const modal = document.getElementById("modal");
-const modalCat = document.getElementById("modalCat");
-const modalQ = document.getElementById("modalQ");
-const modalA = document.getElementById("modalA");
-const revealBtn = document.getElementById("revealBtn");
-const backBtn = document.getElementById("backBtn");
+    // modal
+    const modal = document.getElementById("modal");
+    const modalCat = document.getElementById("modalCat");
+    const modalQ = document.getElementById("modalQ");
+    const modalA = document.getElementById("modalA");
+    const revealBtn = document.getElementById("revealBtn");
+    const backBtn = document.getElementById("backBtn");
 
-// ---------- STATE ----------
-let tilesRemaining = 25; // 5x5
-let lastTile = null;     // DOM node for tile we opened
+    if (!board || !modal || !modalCat || !modalQ || !modalA || !revealBtn || !backBtn) {
+      throw new Error("One or more required DOM elements were not found.");
+    }
 
-// ---------- RENDER ----------
-function renderBoard(){
-  board.innerHTML = "";
+    // ---------- STATE ----------
+    let tilesRemaining = 25; // 5x5
+    let lastTile = null;     // DOM node for tile we opened
 
-  // headers
-  categories.forEach(cat=>{
-    const h = document.createElement("div");
-    h.className = "cat";
-    h.textContent = cat;
-    board.appendChild(h);
-  });
+    // ---------- RENDER ----------
+    function renderBoard(){
+      board.innerHTML = "";
 
-  // 5 rows of values
-  for(let r=0;r<5;r++){
-    categories.forEach(cat=>{
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      tile.textContent = `$${values[r]}`;
-      tile.dataset.cat = cat;
-      tile.dataset.row = r;
-      tile.addEventListener("click", ()=>openQA(tile));
-      board.appendChild(tile);
+      // headers
+      categories.forEach(cat=>{
+        const h = document.createElement("div");
+        h.className = "cat";
+        h.textContent = cat;
+        board.appendChild(h);
+      });
+
+      // 5 rows of values
+      for(let r=0;r<5;r++){
+        categories.forEach(cat=>{
+          const tile = document.createElement("div");
+          tile.className = "tile";
+          tile.textContent = `$${values[r]}`;
+          tile.dataset.cat = cat;
+          tile.dataset.row = r;
+          tile.addEventListener("click", ()=>openQA(tile));
+          board.appendChild(tile);
+        });
+      }
+    }
+
+    // ---------- MODAL FLOW ----------
+    function openQA(tile){
+      if (tile.classList.contains("used")) return;
+
+      lastTile = tile;
+      const cat = tile.dataset.cat;
+      const row = Number(tile.dataset.row);
+      const {q,a} = QA[cat][row];
+
+      modalCat.textContent = `${cat} — Round 1`;
+      modalQ.textContent = `${q} (worth ${values[row]})`;
+      modalA.textContent = "Answer: " + a;
+      modalA.classList.add("hidden");
+
+      modal.classList.add("show"); // center & show
+    }
+
+    revealBtn.addEventListener("click", ()=>{
+      modalA.classList.remove("hidden");
     });
-  }
-}
 
-// ---------- MODAL FLOW ----------
-function openQA(tile){
-  if (tile.classList.contains("used")) return;
+    backBtn.addEventListener("click", ()=>{
+      modal.classList.remove("show");
 
-  lastTile = tile;
-  const cat = tile.dataset.cat;
-  const row = Number(tile.dataset.row);
-  const {q,a} = QA[cat][row];
+      // mark tile used
+      if (lastTile && !lastTile.classList.contains("used")){
+        lastTile.classList.add("used");
+        tilesRemaining--;
+        lastTile = null;
+      }
 
-  modalCat.textContent = `${cat} — Round 1`;
-  modalQ.textContent = `${q} (worth ${values[row]})`;
-  modalA.textContent = "Answer: " + a;
-  modalA.classList.add("hidden");
+      // if board finished, show advance button (placeholder)
+      if (tilesRemaining === 0){
+        controls.innerHTML = `
+          <button class="btn primary" id="nextBtn">
+            Board 1 Complete — Advance to Round 2
+          </button>`;
+        document.getElementById("nextBtn").onclick = ()=>{
+          alert("Round 2 coming next — once Round 1 is perfect, I’ll wire the rest.");
+        };
+      }
+    });
 
-  modal.classList.add("show"); // center & show
-}
+    // ---------- INIT ----------
+    renderBoard();
 
-revealBtn.addEventListener("click", ()=>{
-  modalA.classList.remove("hidden");
-});
-
-backBtn.addEventListener("click", ()=>{
-  modal.classList.remove("show");
-
-  // mark tile used
-  if (lastTile && !lastTile.classList.contains("used")){
-    lastTile.classList.add("used");
-    tilesRemaining--;
-    lastTile = null;
-  }
-
-  // if board finished, show advance button (placeholder)
-  if (tilesRemaining === 0){
-    controls.innerHTML = `
-      <button class="btn primary" id="nextBtn">
-        Board 1 Complete — Advance to Round 2
-      </button>`;
-    document.getElementById("nextBtn").onclick = ()=>{
-      alert("Round 2 coming next — once Round 1 is perfect, I’ll wire the rest.");
-    };
+  } catch (err) {
+    // If anything fails, show a visible message so it’s not a blank screen.
+    const board = document.getElementById("board");
+    if (board) {
+      board.innerHTML = `<div style="color:#fff;background:#8b0000;padding:12px;border-radius:8px;">
+        Error loading game: ${err.message}
+      </div>`;
+    }
+    console.error(err);
   }
 });
 
