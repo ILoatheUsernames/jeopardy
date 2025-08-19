@@ -8,20 +8,20 @@ const QA = {
     {q:"Which major focuses on coding & algorithms?", a:"Computer Science"},
     {q:"Name a major that combines biology & engineering.", a:"Biological Engineering"},
     {q:"Which major studies supply chains & optimization?", a:"Industrial Engineering"},
-    {q:"Which tool compares LSU majors to career options?", a:"MyMajors / What Can I Do With This Major?"}
+    {q:"Which tool compares LSU majors to career options?", a:"What Can I Do With This Major?"}
   ],
   "Careers": [
     {q:"What document is often required with a résumé?", a:"Cover letter"},
     {q:"Common first role for new engineers?", a:"Associate Engineer / Intern / Co-op"},
-    {q:"Resource for salary & outlook?", a:"O*NET or BLS"},
+    {q:"Resource for salary & outlook?", a:"O*NET and First Destination Survey"},
     {q:"LSU event connecting students with employers?", a:"Career Expo"},
     {q:"Two ways to gain experience besides internships?", a:"Volunteering; Undergraduate research"}
   ],
   "Skills": [
     {q:"Name a transferable skill.", a:"Communication / Leadership / Problem-solving"},
-    {q:"Software widely used for résumés?", a:"Microsoft Word"},
-    {q:"Hard vs. soft skills?", a:"Hard = technical; Soft = interpersonal"},
-    {q:"LSU resource to practice interviews?", a:"Mock Interview Program"},
+    {q:"What file format should a resume be in?", a:".pdf"},
+    {q:"Hard vs. soft skills?", a:"Hard = technical/certicfications; Soft = interpersonal"},
+    {q:"LSU resource to practice interviews?", a:"Mock Interview Program/appointment"},
     {q:"STAR method is used for…", a:"Structuring interview answers"}
   ],
   "Internships": [
@@ -32,9 +32,9 @@ const QA = {
     {q:"One key difference between internship & co-op?", a:"Co-op is longer/full-time & alternates with classes"}
   ],
   "Networking": [
-    {q:"Best way to start a LinkedIn profile?", a:"Pro photo + clear headline"},
-    {q:"LSU event to practice networking?", a:"Networking Receptions"},
-    {q:"What’s an informational interview?", a:"Meeting to learn about someone’s career"},
+    {q:"Best way to start a LinkedIn profile?", a:"Pro headshot + clear headline"},
+    {q:"LSU event to practice networking?", a:"ENR, CID, Expo, CPW"},
+    {q:"What’s a technical interview?", a:"Meeting to learn about prospect's technical ability"},
     {q:"Who else is in your network?", a:"Professors, peers, alumni, family, mentors"},
     {q:"Define the hidden job market.", a:"Jobs found via networking, not postings"}
   ]
