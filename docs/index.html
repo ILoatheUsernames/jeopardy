@@ -4,7 +4,112 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LSU Engineering Gameshow — Round 1</title>
-  <link rel="stylesheet" href="style.css"/>
+
+  <!-- ===== Styles (inline so it always loads) ===== -->
+  <style>
+    :root{
+      --lsu-purple:#461D7C;
+      --lsu-purple-dark:#2c1251;
+      --lsu-gold:#FDD023;
+      --tile-blue:#0f2b7a;
+      --tile-blue-2:#1a41b0;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Arial, Helvetica, sans-serif;
+      color:#fff;
+      background:#0b1240;
+      text-align:center;
+    }
+    header{
+      background: var(--lsu-purple-dark);
+      padding: 18px 12px;
+      border-bottom: 4px solid var(--lsu-gold);
+    }
+    h1{
+      margin:0;
+      font-size: 2.4rem;
+      color: var(--lsu-gold);
+      text-shadow: 2px 2px #000;
+    }
+    #subtitle{ margin-top:6px; opacity:.95 }
+    main{ max-width: 1200px; margin: 26px auto; padding: 0 12px; }
+
+    #board{
+      display:grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+    }
+    .cat{
+      background:#17235d;
+      border:2px solid #000;
+      padding: 12px 8px;
+      font-weight: 800;
+      border-radius: 12px;
+      box-shadow: 2px 2px 8px #000;
+    }
+    .tile{
+      background: var(--tile-blue);
+      border: 2px solid #000;
+      padding: 28px 8px;
+      border-radius: 12px;
+      color: var(--lsu-gold);
+      font-weight: 900;
+      font-size: 1.7rem;
+      cursor: pointer;
+      box-shadow: 2px 2px 8px #000;
+      transition: background .15s ease-in-out, transform .06s;
+    }
+    .tile:hover{ background: var(--tile-blue-2); }
+    .tile:active{ transform: scale(.98); }
+    .tile.used{
+      background: #222 !important;
+      color:#555 !important;
+      cursor: default;
+      pointer-events: none;
+      position: relative;
+    }
+    .tile.used::after{
+      content:"X";
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      font-size: 3.2rem; color: var(--lsu-gold); opacity:.7;
+    }
+
+    #controls{ margin-top:18px; }
+
+    .btn{
+      background:#e5e5e5; color:#000; border:none;
+      padding:10px 16px; border-radius:8px; cursor:pointer;
+      font-weight:700;
+    }
+    .btn.primary{ background: var(--lsu-gold); }
+    .btn:hover{ filter: brightness(1.05); }
+    .row{ margin-top:12px; }
+
+    .hidden{ display:none; }
+
+    .modal{
+      position: fixed; inset:0;
+      background: rgba(0,0,0,.82);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding: 16px;
+      z-index: 1000;
+    }
+    .modal.show{ display:flex; }
+
+    .modal-card{
+      width: min(860px, calc(100% - 24px));
+      background:#fff; color:#000;
+      border-radius:14px; padding:24px 18px 18px;
+      text-align:center; box-shadow:0 12px 40px rgba(0,0,0,.35);
+    }
+    .modal-card h2{ margin:0 0 12px }
+    .qa{ font-size:1.35rem; margin:10px 0 }
+  </style>
 </head>
 <body>
   <header>
@@ -17,7 +122,7 @@
     <div id="controls"></div>
   </main>
 
-  <!-- Centered overlay modal -->
+  <!-- Modal -->
   <div id="modal" class="modal">
     <div class="modal-card">
       <h2 id="modalCat"></h2>
@@ -32,7 +137,121 @@
     </div>
   </div>
 
-  <!-- Keep the script at the very end -->
-  <script src="script.js"></script>
+  <!-- ===== Script (inline so it always runs) ===== -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // Data
+      const categories = ["Majors","Careers","Skills","Internships","Networking"];
+      const values = [100,200,300,400,500];
+      const QA = {
+        "Majors": [
+          {q:"What’s the most common major for pre-med at LSU?", a:"Biological Sciences"},
+          {q:"Which major focuses on coding & algorithms?", a:"Computer Science"},
+          {q:"Name a major that combines biology & engineering.", a:"Biological Engineering"},
+          {q:"Which major studies supply chains & optimization?", a:"Industrial Engineering"},
+          {q:"Which tool compares LSU majors to career options?", a:"MyMajors / What Can I Do With This Major?"}
+        ],
+        "Careers": [
+          {q:"What document is often required with a résumé?", a:"Cover letter"},
+          {q:"Common first role for new engineers?", a:"Associate Engineer / Intern / Co-op"},
+          {q:"Resource for salary & outlook?", a:"O*NET or BLS"},
+          {q:"LSU event connecting students with employers?", a:"Career Expo"},
+          {q:"Two ways to gain experience besides internships?", a:"Volunteering; Undergraduate research"}
+        ],
+        "Skills": [
+          {q:"Name a transferable skill.", a:"Communication / Leadership / Problem-solving"},
+          {q:"Software widely used for résumés?", a:"Microsoft Word"},
+          {q:"Hard vs. soft skills?", a:"Hard = technical; Soft = interpersonal"},
+          {q:"LSU resource to practice interviews?", a:"Mock Interview Program"},
+          {q:"STAR method is used for…", a:"Structuring interview answers"}
+        ],
+        "Internships": [
+          {q:"Can freshmen get internships? (T/F)", a:"True"},
+          {q:"Platform LSU uses for postings?", a:"Handshake"},
+          {q:"Best time to apply for summer internships?", a:"Previous fall"},
+          {q:"Paid DC opportunity program?", a:"LSU DC Internship Program"},
+          {q:"One key difference between internship & co-op?", a:"Co-op is longer/full-time & alternates with classes"}
+        ],
+        "Networking": [
+          {q:"Best way to start a LinkedIn profile?", a:"Pro photo + clear headline"},
+          {q:"LSU event to practice networking?", a:"Networking Receptions"},
+          {q:"What’s an informational interview?", a:"Meeting to learn about someone’s career"},
+          {q:"Who else is in your network?", a:"Professors, peers, alumni, family, mentors"},
+          {q:"Define the hidden job market.", a:"Jobs found via networking, not postings"}
+        ]
+      };
+
+      // Elements
+      const board = document.getElementById("board");
+      const controls = document.getElementById("controls");
+      const modal = document.getElementById("modal");
+      const modalCat = document.getElementById("modalCat");
+      const modalQ = document.getElementById("modalQ");
+      const modalA = document.getElementById("modalA");
+      const revealBtn = document.getElementById("revealBtn");
+      const backBtn = document.getElementById("backBtn");
+
+      let tilesRemaining = 25;
+      let lastTile = null;
+
+      function renderBoard(){
+        board.innerHTML = "";
+        categories.forEach(cat=>{
+          const h = document.createElement("div");
+          h.className = "cat";
+          h.textContent = cat;
+          board.appendChild(h);
+        });
+        for(let r=0;r<5;r++){
+          categories.forEach(cat=>{
+            const tile = document.createElement("div");
+            tile.className = "tile";
+            tile.textContent = `$${values[r]}`;
+            tile.dataset.cat = cat;
+            tile.dataset.row = r;
+            tile.addEventListener("click", ()=>openQA(tile));
+            board.appendChild(tile);
+          });
+        }
+      }
+
+      function openQA(tile){
+        if (tile.classList.contains("used")) return;
+        lastTile = tile;
+        const cat = tile.dataset.cat;
+        const row = Number(tile.dataset.row);
+        const {q,a} = QA[cat][row];
+
+        modalCat.textContent = `${cat} — Round 1`;
+        modalQ.textContent = `${q} (worth ${values[row]})`;
+        modalA.textContent = "Answer: " + a;
+        modalA.classList.add("hidden");
+
+        modal.classList.add("show");
+      }
+
+      revealBtn.addEventListener("click", ()=> modalA.classList.remove("hidden"));
+
+      backBtn.addEventListener("click", ()=>{
+        modal.classList.remove("show");
+        if (lastTile && !lastTile.classList.contains("used")){
+          lastTile.classList.add("used");
+          tilesRemaining--;
+          lastTile = null;
+        }
+        if (tilesRemaining === 0){
+          controls.innerHTML = `
+            <button class="btn primary" id="nextBtn">
+              Board 1 Complete — Advance to Round 2
+            </button>`;
+          document.getElementById("nextBtn").onclick = ()=>{
+            alert("Round 2 coming next. 👍");
+          };
+        }
+      });
+
+      renderBoard();
+    });
+  </script>
 </body>
 </html>
