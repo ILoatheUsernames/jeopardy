@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const values = [100,200,300,400,500];
 const QA = {
   "Majors": [
-    {q:"What’s the most common major for pre-med at LSU?", a:"Biological Sciences"},
+    {q:"What’s an up and coming major for students when they are applying for med school?", a:"Biological Engineering"},
     {q:"Which major focuses on coding & algorithms?", a:"Computer Science"},
     {q:"Name a major that combines biology & engineering.", a:"Biological Engineering"},
     {q:"Which major studies supply chains & optimization?", a:"Industrial Engineering"},
@@ -30,12 +30,12 @@ const QA = {
     {q:"Can freshmen get internships? (T/F)", a:"True"},
     {q:"Platform LSU uses for postings?", a:"Handshake"},
     {q:"Best time to apply for summer internships?", a:"Previous fall"},
-    {q:"Paid DC opportunity program?", a:"LSU DC Internship Program"},
-    {q:"One key difference between internship & co-op?", a:"Co-op is longer/full-time & alternates with classes"}
+    {q:"What is a paid cooperative opportunity program @ LSU?", a:"LSU Co-op Program - take a semester off while you work"},
+    {q:"One key difference between internship & co-op?", a:"Co-op is longer & typically occurs during a fall/spring semester"}
   ],
   "Networking": [
     {q:"Best way to start a LinkedIn profile?", a:"Pro headshot + clear headline"},
-    {q:"LSU event to practice networking?", a:"ENR, CID, Expo, CPW"},
+    {q:"Career Center events to networking?", a:"Career Prep Week, ENR, Expo, CID"},
     {q:"What’s a technical interview?", a:"Meeting to learn about prospect's technical ability"},
     {q:"Who else is in your network?", a:"Professors, peers, alumni, family, mentors"},
     {q:"Define the hidden job market.", a:"Jobs found via networking, not postings"}
